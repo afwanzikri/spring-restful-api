@@ -1,4 +1,4 @@
-//md stand for mark down
+// md stand for mark down
 # User API Spec
 
 ## Register User
