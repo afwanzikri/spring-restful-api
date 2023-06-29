@@ -1,4 +1,4 @@
-// md stand for mark down
+// .md file extension (also written as .markdown) stands for “Markdown documentation”
 # User API Spec
 
 ## Register User
@@ -22,7 +22,6 @@ Response Body (Success) :
 Response Body (Failed) :
 ```json
 {
-  "data"    : "error",
   "errors"  : "Username cannot be blank !!!"
 }
 ```
@@ -47,7 +46,7 @@ Response Body (Success) :
   }
 }
 ```
-Response Body (Failed) :
+Response Body (Failed, 401) :
 ```json
 {
   "errors"  : "Username or Password is wrong"
@@ -57,7 +56,8 @@ Response Body (Failed) :
 ## Get User
 Endpoint : GET /api/users/current
 
-Request Header
+Request Header :
+- X-API-TOKEN : Token (Mandatory)
 
 Response Body (Success) :
 ```json
@@ -68,7 +68,7 @@ Response Body (Success) :
   }
 }
 ```
-Response Body (Failed) :
+Response Body (Failed, 401) :
 ```json
 {
   "errors"  : "Unauthorized"
@@ -77,6 +77,9 @@ Response Body (Failed) :
 
 ## Update User
 Endpoint : PATCH /api/users/current
+
+Request Header :
+- X-API-TOKEN : Token (Mandatory)
 
 Request Body :
 ```json
@@ -90,17 +93,27 @@ Response Body (Success) :
 ```json
 {
   "data" : {
-    "token" : "TOKEN",
-    "expiredAt" : 23434565435345 // milliseconds
+    "username" : "afwan",
+    "name"     : "Afwan Zikri"
   }
 }
 ```
-Response Body (Failed) :
+Response Body (Failed, 401) :
 ```json
 {
-  "errors"  : "Username or Password is wrong"
+  "errors"  : "Unauthorized"
 }
 ```
 
-
 ## Logout User
+Endpoint : DELETE /api/auth/logout
+
+Request Header :
+- X-API-TOKEN : Token (Mandatory)
+
+Response Body (Success) :
+```json
+{
+  "data" : "OK"
+}
+```
