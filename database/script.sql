@@ -13,7 +13,6 @@
 */
 
 select * from users;
-
 desc users;
 
 /*CREATE table contacts (
@@ -43,6 +42,5 @@ desc contacts;
 )*/
 
 select * from addresses;
-
 desc addresses;
 
