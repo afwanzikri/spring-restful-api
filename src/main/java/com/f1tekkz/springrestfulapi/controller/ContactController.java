@@ -3,6 +3,7 @@ package com.f1tekkz.springrestfulapi.controller;
 import com.f1tekkz.springrestfulapi.entity.User;
 import com.f1tekkz.springrestfulapi.model.ContactResponse;
 import com.f1tekkz.springrestfulapi.model.CreateContactRequest;
+import com.f1tekkz.springrestfulapi.model.UpdateContactRequest;
 import com.f1tekkz.springrestfulapi.model.WebResponse;
 import com.f1tekkz.springrestfulapi.service.ContactService;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,21 @@ public class ContactController {
         log.info("contactId --> {}", contactId);
 
         ContactResponse contactResponse = contactService.get(user, contactId);
+        return WebResponse.<ContactResponse>builder().data(contactResponse).build();
+    }
+
+    @PutMapping(
+            path = "/api/contacts/{contactId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<ContactResponse> create(User user,
+                                               @RequestBody UpdateContactRequest request,
+                                               @PathVariable("contactId") String contactId){
+
+        request.setId(contactId);
+
+        ContactResponse contactResponse = contactService.update(user, request);
         return WebResponse.<ContactResponse>builder().data(contactResponse).build();
     }
 }
