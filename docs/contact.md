@@ -36,6 +36,32 @@ Response Body (Failed) :
 }
 ```
 
+## Get Contact
+Endpoint : GET /api/contacts/{idContacts}
+
+Request Header :
+- X-API-TOKEN : Token (Mandatory)
+
+Response Body (Success) :
+```json
+{
+  "data" : {
+    "id" : "random-string",
+    "firstName" : "Afwan",
+    "lastName" : "Zikri",
+    "email" : "afwanzikri@gmail.com",
+    "phone" : "081266005092"
+  }
+}
+```
+
+Response Body (Failed, 404) :
+```json
+{
+  "errors" : "Contact is not found"
+}
+```
+
 ## Update Contact
 Endpoint : PUT /api/contacts/{idContact}
 
@@ -69,32 +95,6 @@ Response Body (Failed) :
 ```json
 {
   "errors" : "Email format invalid, phone number invalid, ..."
-}
-```
-
-## Get Contact
-Endpoint : GET /api/contacts/{idContacts}
-
-Request Header :
-- X-API-TOKEN : Token (Mandatory)
-
-Response Body (Success) :
-```json
-{
-  "data" : {
-    "id" : "random-string",
-    "firstName" : "Afwan",
-    "lastName" : "Zikri",
-    "email" : "afwanzikri@gmail.com",
-    "phone" : "081266005092"
-  }
-}
-```
-
-Response Body (Failed, 404) :
-```json
-{
-  "errors" : "Contact is not found"
 }
 ```
 

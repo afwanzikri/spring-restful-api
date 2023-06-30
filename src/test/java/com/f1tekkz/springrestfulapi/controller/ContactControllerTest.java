@@ -17,6 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.MockMvcBuilder.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,8 +44,8 @@ class ContactControllerTest {
 
     @BeforeEach
     void setUp() {
+        contactRepository.deleteAll(); // hapus child (CONTACT) terlebih dahulu, baru setelah itu bisa hapus parent (USER)
         userRepository.deleteAll();
-        contactRepository.deleteAll();
 
         User user = new User();
         user.setUsername("f1tekkz");
@@ -71,7 +74,7 @@ class ContactControllerTest {
         ).andExpectAll(
                 status().isBadRequest()
         ).andDo(result -> {
-            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<String>>() {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
             });
 
             assertNotNull(response.getErrors());
@@ -95,7 +98,7 @@ class ContactControllerTest {
         ).andExpectAll(
                 status().isOk()
         ).andDo(result -> {
-            WebResponse<ContactResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<ContactResponse>>() {
+            WebResponse<ContactResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
             });
 
             assertNull(response.getErrors());
@@ -106,6 +109,60 @@ class ContactControllerTest {
 
             assertTrue(contactRepository.existsById(response.getData().getId()));
 
+        });
+    }
+
+    /*
+     * -- Unit test GET Contact by id API --
+     */
+    @Test
+    void getContactNotFound() throws Exception{
+        mockMvc.perform(
+                get("/api/contacts/12354353")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void getContactSuccess() throws Exception{
+        User user = userRepository.findById("f1tekkz").orElseThrow();
+
+        Contact contact = new Contact();
+        contact.setUser(user);
+        contact.setId(UUID.randomUUID().toString());
+        contact.setFirstName("Afwan");
+        contact.setLastName("Zikri");
+        contact.setEmail("iniEmail@gmail.com");
+        contact.setPhone("081266005092");
+        contactRepository.save(contact);
+
+        mockMvc.perform(
+                get("/api/contacts/" + contact.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<ContactResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+
+            assertEquals(contact.getId(), response.getData().getId());
+            assertEquals(contact.getFirstName(), response.getData().getFirstName());
+            assertEquals(contact.getLastName(), response.getData().getLastName());
+            assertEquals(contact.getEmail(), response.getData().getEmail());
+            assertEquals(contact.getPhone(), response.getData().getPhone());
         });
     }
 
