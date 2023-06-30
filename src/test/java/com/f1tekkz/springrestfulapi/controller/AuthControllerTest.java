@@ -126,6 +126,9 @@ class AuthControllerTest {
         });
     }
 
+    /*
+     * -- Unit test DELETE logout User API --
+     */
     @Test
     void logoutFailed() throws Exception {
         mockMvc.perform(
