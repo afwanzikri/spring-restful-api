@@ -37,12 +37,13 @@ Request Body :
 }
 ```
 
-Response Body (Success) :
+Response Body (Success) : 
+// expiredAt in milliseconds
 ```json
 {
   "data" : {
     "token" : "TOKEN",
-    "expiredAt" : 23434565435345 // milliseconds
+    "expiredAt" : 23434565435345 
   }
 }
 ```
@@ -82,10 +83,14 @@ Request Header :
 - X-API-TOKEN : Token (Mandatory)
 
 Request Body :
+/*
+    put if only want to update name
+    put if only want to update password
+*/
 ```json
 {
-  "name" : "Afwan Zikri ZR", // put if only want to update name
-  "password" : "new pswd" // put if only want to update password
+  "name" : "Afwan Zikri ZR", 
+  "password" : "new pswd" 
 }
 ```
 

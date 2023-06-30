@@ -2,6 +2,7 @@ package com.f1tekkz.springrestfulapi.controller;
 
 import com.f1tekkz.springrestfulapi.entity.User;
 import com.f1tekkz.springrestfulapi.model.RegisterUserRequest;
+import com.f1tekkz.springrestfulapi.model.UpdateUserRequest;
 import com.f1tekkz.springrestfulapi.model.UserResponse;
 import com.f1tekkz.springrestfulapi.model.WebResponse;
 import com.f1tekkz.springrestfulapi.repository.UserRepository;
@@ -15,9 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.print.attribute.standard.Media;
-import java.lang.reflect.Type;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.MockMvcBuilder.*;
@@ -199,6 +197,61 @@ class UserControllerTest {
             });
 
             assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void updateUserUnauthorized() throws Exception {
+        UpdateUserRequest request = new UpdateUserRequest();
+
+        mockMvc.perform(
+                patch("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        ).andExpectAll(
+                status().isUnauthorized()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void updateUserSuccess() throws Exception {
+        User user = new User();
+        user.setUsername("f1tekkz");
+        user.setName("Afwan");
+        user.setPassword(BCrypt.hashpw("rahasia", BCrypt.gensalt()));
+        user.setToken("ksjdfhoisatqwekrwesdffwsuoehw");
+        user.setTokenExpiredAt(System.currentTimeMillis() + 10000000000L);
+        userRepository.save(user);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("AfwanZ");
+        request.setPassword("passwordBaru");
+
+        mockMvc.perform(
+                patch("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-API-TOKEN", "ksjdfhoisatqwekrwesdffwsuoehw")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<UserResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+            assertEquals("f1tekkz", response.getData().getUsername());
+            assertEquals("AfwanZ", response.getData().getName());
+
+            User userDB = userRepository.findById("f1tekkz").orElse(null);
+            assertNotNull(userDB);
+            assertTrue(BCrypt.checkpw("passwordBaru", userDB.getPassword()));
         });
     }
 
