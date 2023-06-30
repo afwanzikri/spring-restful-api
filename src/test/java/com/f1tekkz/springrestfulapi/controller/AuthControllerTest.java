@@ -41,10 +41,13 @@ class AuthControllerTest {
         userRepository.deleteAll();
     }
 
+    /*
+     * -- Unit test POST Login API --
+     */
     @Test
     void loginFailedUserNotFound() throws Exception {
         LoginUserRequest request = new LoginUserRequest();
-        request.setUsername("pertama");
+        request.setUsername("f1tekkz");
         request.setPassword("test");
 
         mockMvc.perform(
@@ -66,12 +69,12 @@ class AuthControllerTest {
     void loginFailedUserWrongPassword() throws Exception {
         User user = new User();
         user.setName("Test");
-        user.setUsername("pertama");
+        user.setUsername("f1tekkz");
         user.setPassword(BCrypt.hashpw("true", BCrypt.gensalt()));
         userRepository.save(user);
 
         LoginUserRequest request = new LoginUserRequest();
-        request.setUsername("pertama");
+        request.setUsername("f1tekkz");
         request.setPassword("false");
 
         mockMvc.perform(
@@ -93,12 +96,12 @@ class AuthControllerTest {
     void loginSuccess() throws Exception {
         User user = new User();
         user.setName("Test");
-        user.setUsername("pertama");
+        user.setUsername("f1tekkz");
         user.setPassword(BCrypt.hashpw("true", BCrypt.gensalt()));
         userRepository.save(user);
 
         LoginUserRequest request = new LoginUserRequest();
-        request.setUsername("pertama");
+        request.setUsername("f1tekkz");
         request.setPassword("true");
 
         mockMvc.perform(
@@ -116,7 +119,7 @@ class AuthControllerTest {
             assertNotNull(response.getData().getToken());
             assertNotNull(response.getData().getExpiredAt());
 
-            User userDB =  userRepository.findById("pertama").orElse(null);
+            User userDB =  userRepository.findById("f1tekkz").orElse(null);
             assertNotNull((userDB));
             assertEquals(userDB.getToken(), response.getData().getToken());
             assertEquals(userDB.getTokenExpiredAt(), response.getData().getExpiredAt());

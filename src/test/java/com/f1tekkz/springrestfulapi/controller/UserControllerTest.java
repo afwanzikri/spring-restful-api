@@ -17,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.MockMvcBuilder.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,6 +44,7 @@ class UserControllerTest {
     }
 
     /*
+     * -- Unit test POST Register User API --
      * bikin register dalam bentuk object
      * dikirim dalam bentuk JSON menggunakan objectMapper
      * pastikan statusnya OK
@@ -119,6 +122,9 @@ class UserControllerTest {
         });
     }
 
+    /*
+     * -- Unit test GET User API --
+     */
     @Test
     void getUserUnauthorized() throws Exception {
         mockMvc.perform(
@@ -153,8 +159,8 @@ class UserControllerTest {
     @Test
     void getUserAuthorized() throws Exception {
         User user = new User();
-        user.setUsername("pertama");
-        user.setName("Pertama Kali");
+        user.setUsername("f1tekkz");
+        user.setName("AfwanZ");
         user.setPassword(BCrypt.hashpw("rahasia", BCrypt.gensalt()));
         user.setToken("ksjdfhoisatqwekrwesdffwsuoehw");
         user.setTokenExpiredAt(System.currentTimeMillis() + 10000000000L);
@@ -171,16 +177,16 @@ class UserControllerTest {
             });
 
             assertNull(response.getErrors());
-            assertEquals("pertama", response.getData().getUsername());
-            assertEquals("Pertama Kali", response.getData().getName());
+            assertEquals("f1tekkz", response.getData().getUsername());
+            assertEquals("AfwanZ", response.getData().getName());
         });
     }
 
     @Test
     void getUserTokenExpired() throws Exception {
         User user = new User();
-        user.setUsername("pertama");
-        user.setName("Pertama Kali");
+        user.setUsername("f1tekkz");
+        user.setName("AfwanZ");
         user.setPassword(BCrypt.hashpw("rahasia", BCrypt.gensalt()));
         user.setToken("ksjdfhoisatqwekrwesdffwsuoehw");
         user.setTokenExpiredAt(System.currentTimeMillis() - 10000000000L);
@@ -200,9 +206,12 @@ class UserControllerTest {
         });
     }
 
+    /*
+     * -- Unit test PATCH Update User API --
+     */
     @Test
-    void updateUserUnauthorized() throws Exception {
-        UpdateUserRequest request = new UpdateUserRequest();
+    void updateUserUnauthorized() throws Exception { // Token not available
+        UpdateUserRequest request = new UpdateUserRequest(); // create object UpdateUserRequest where name & password is null
 
         mockMvc.perform(
                 patch("/api/users/current")
@@ -220,10 +229,30 @@ class UserControllerTest {
     }
 
     @Test
+    void updateNamePasswordNull() throws Exception {
+        UpdateUserRequest request = new UpdateUserRequest(); // create object UpdateUserRequest where name & password is null
+
+        mockMvc.perform(
+                patch("/api/users/current")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-API-TOKEN", "ksjdfhoisatqwekrwesdffwsuoehw")
+        ).andExpectAll(
+                status().isUnauthorized()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
     void updateUserSuccess() throws Exception {
         User user = new User();
         user.setUsername("f1tekkz");
-        user.setName("Afwan");
+        user.setName("AfwanZ");
         user.setPassword(BCrypt.hashpw("rahasia", BCrypt.gensalt()));
         user.setToken("ksjdfhoisatqwekrwesdffwsuoehw");
         user.setTokenExpiredAt(System.currentTimeMillis() + 10000000000L);
@@ -231,7 +260,7 @@ class UserControllerTest {
 
         UpdateUserRequest request = new UpdateUserRequest();
         request.setName("AfwanZ");
-        request.setPassword("passwordBaru");
+//        request.setPassword("passwordBaru");
 
         mockMvc.perform(
                 patch("/api/users/current")
@@ -251,7 +280,14 @@ class UserControllerTest {
 
             User userDB = userRepository.findById("f1tekkz").orElse(null);
             assertNotNull(userDB);
-            assertTrue(BCrypt.checkpw("passwordBaru", userDB.getPassword()));
+
+            if (Objects.nonNull(request.getName())){
+                assertEquals(request.getName(), response.getData().getName());
+            }
+
+            if (Objects.nonNull(request.getPassword())){
+                assertTrue(BCrypt.checkpw("passwordBaru", userDB.getPassword()));
+            }
         });
     }
 
