@@ -98,6 +98,26 @@ Response Body (Failed) :
 }
 ```
 
+## Remove Contact
+Endpoint : DELETE /api/contacts/{idContacts}
+
+Request Header :
+- X-API-TOKEN : Token (Mandatory)
+
+Response Body (Success) :
+```json
+{
+  "data" : "OK"
+}
+```
+
+Response Body (Failed) :
+```json
+{
+  "errors" : "Contact is not found"
+}
+```
+
 ## Search Contact
 Endpoint : GET /api/contacts
 
@@ -135,25 +155,5 @@ Response Body (Failed) :
 ```json
 {
   "errors" : "Unauthorized, Contact not found "
-}
-```
-
-## Remove Contact
-Endpoint : DELETE /api/contacts/{idContacts}
-
-Request Header :
-- X-API-TOKEN : Token (Mandatory)
-
-Response Body (Success) :
-```json
-{
-  "data" : "OK"
-}
-```
-
-Response Body (Failed) :
-```json
-{
-  "errors" : "Contact is not found"
 }
 ```

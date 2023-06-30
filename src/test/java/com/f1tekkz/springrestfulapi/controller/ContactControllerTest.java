@@ -167,6 +167,9 @@ class ContactControllerTest {
         });
     }
 
+    /*
+     * -- Unit test Update-Contact API --
+     */
     @Test
     void updateContactBadRequest() throws Exception{
         UpdateContactRequest request = new UpdateContactRequest();
@@ -228,6 +231,55 @@ class ContactControllerTest {
 
             assertTrue(contactRepository.existsById(response.getData().getId()));
 
+        });
+    }
+
+    /*
+     * -- Unit test DELETE-Contact API --
+     */
+    @Test
+    void deleteContactNotFound() throws Exception{
+        mockMvc.perform(
+                delete("/api/contacts/12354353")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void deleteContactSuccess() throws Exception{
+        User user = userRepository.findById("f1tekkz").orElseThrow();
+
+        Contact contact = new Contact();
+        contact.setUser(user);
+        contact.setId(UUID.randomUUID().toString());
+        contact.setFirstName("Afwan");
+        contact.setLastName("Zikri");
+        contact.setEmail("iniEmail@gmail.com");
+        contact.setPhone("081266005092");
+        contactRepository.save(contact);
+
+        mockMvc.perform(
+                delete("/api/contacts/" + contact.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+            assertEquals("OK", response.getData());
         });
     }
 }
