@@ -35,8 +35,7 @@ public class ContactService {
         contact.setEmail(request.getEmail());
         contact.setPhone(request.getPhone());
         contact.setUser(user);
-
-        contactRepository.save(contact);
+//        contactRepository.save(contact);
 
         return toContactResponse(contact);
     }
@@ -70,8 +69,7 @@ public class ContactService {
         contact.setLastName(request.getLastName());
         contact.setEmail(request.getEmail());
         contact.setPhone(request.getPhone());
-
-        contactRepository.save(contact);
+//        contactRepository.save(contact);
 
         return toContactResponse(contact);
     }
@@ -81,6 +79,6 @@ public class ContactService {
         Contact contact = contactRepository.findFirstByUserAndId(user, contactId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact Not Found"));
 
-        contactRepository.delete(contact);
+//        contactRepository.delete(contact);
     }
 }

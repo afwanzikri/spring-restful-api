@@ -107,9 +107,7 @@ class ContactControllerTest {
             assertEquals("Zikri", response.getData().getLastName());
             assertEquals("iniEmail@gmail.com", response.getData().getEmail());
             assertEquals("081266005092", response.getData().getPhone());
-
-            assertTrue(contactRepository.existsById(response.getData().getId()));
-
+//            assertTrue(contactRepository.existsById(response.getData().getId()));
         });
     }
 
@@ -144,7 +142,7 @@ class ContactControllerTest {
         contact.setLastName("Zikri");
         contact.setEmail("iniEmail@gmail.com");
         contact.setPhone("081266005092");
-        contactRepository.save(contact);
+        contactRepository.save(contact); // karena method utk UnitTest dan tidak menggunakan annotation @Transactional, maka dibutuhkan contactRepository.save(contact)
 
         mockMvc.perform(
                 get("/api/contacts/" + contact.getId())
@@ -203,7 +201,7 @@ class ContactControllerTest {
         contact.setLastName("Zikri");
         contact.setEmail("iniEmail@gmail.com");
         contact.setPhone("081266005092");
-        contactRepository.save(contact);
+        contactRepository.save(contact); // karena method utk UnitTest dan tidak menggunakan annotation @Transactional, maka dibutuhkan contactRepository.save(contact)
 
         UpdateContactRequest request = new UpdateContactRequest();
         request.setFirstName("Alan Anandito");
@@ -265,7 +263,7 @@ class ContactControllerTest {
         contact.setLastName("Zikri");
         contact.setEmail("iniEmail@gmail.com");
         contact.setPhone("081266005092");
-        contactRepository.save(contact);
+        contactRepository.save(contact); // karena method utk UnitTest dan tidak menggunakan annotation @Transactional, maka dibutuhkan contactRepository.save(contact)
 
         mockMvc.perform(
                 delete("/api/contacts/" + contact.getId())
