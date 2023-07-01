@@ -1,16 +1,16 @@
 package com.f1tekkz.springrestfulapi.controller;
 
 import com.f1tekkz.springrestfulapi.entity.User;
-import com.f1tekkz.springrestfulapi.model.ContactResponse;
-import com.f1tekkz.springrestfulapi.model.CreateContactRequest;
-import com.f1tekkz.springrestfulapi.model.UpdateContactRequest;
-import com.f1tekkz.springrestfulapi.model.WebResponse;
+import com.f1tekkz.springrestfulapi.model.*;
 import com.f1tekkz.springrestfulapi.service.ContactService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -64,5 +64,35 @@ public class ContactController {
 
         contactService.delete(user, contactId);
         return WebResponse.<String>builder().data("OK").build();
+    }
+
+    @GetMapping(
+            path = "/api/contacts",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<ContactResponse>> search(User user,
+                                                     @RequestParam(value = "name", required = false) String name,
+                                                     @RequestParam(value = "email", required = false) String email,
+                                                     @RequestParam(value = "phone", required = false) String phone,
+                                                     @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                     @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
+                                                     ){
+        SearchContactRequest request = SearchContactRequest.builder()
+                .name(name)
+                .email(email)
+                .phone(phone)
+                .page(page)
+                .size(size)
+                .build();
+
+        Page<ContactResponse> contactResponses = contactService.search(user, request);
+        return WebResponse.<List<ContactResponse>>builder()
+                .data(contactResponses.getContent())
+                .paging(PagingResponse.builder()
+                        .currentPage(contactResponses.getNumber())
+                        .totalPage(contactResponses.getTotalPages())
+                        .size(contactResponses.getSize())
+                        .build())
+                .build();
     }
 }
