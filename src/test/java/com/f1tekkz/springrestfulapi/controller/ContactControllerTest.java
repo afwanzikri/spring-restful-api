@@ -286,8 +286,7 @@ class ContactControllerTest {
      * -- Unit test GET Search-contact API --
      */
     @Test
-    void searchNotFound() throws Exception{
-
+    void searchContactNotFound() throws Exception{
         mockMvc.perform(
                 get("/api/contacts")
                         .accept(MediaType.APPLICATION_JSON)
@@ -301,14 +300,14 @@ class ContactControllerTest {
 
             assertNull(response.getErrors());
             assertEquals(0, response.getData().size());
-            assertEquals(0, response.getPaging().getTotalPage());
             assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(0, response.getPaging().getTotalPage());
             assertEquals(10, response.getPaging().getSize());
         });
     }
 
     @Test
-    void searchParamSuccess() throws Exception{
+    void searchContactSuccess() throws Exception{
         User user = userRepository.findById("f1tekkz").orElseThrow();
 
         for (int i = 0; i < 100; i++) {
@@ -336,8 +335,8 @@ class ContactControllerTest {
 
             assertNull(response.getErrors());
             assertEquals(10, response.getData().size());
-            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(10, response.getPaging().getSize());
         });
 
@@ -355,8 +354,8 @@ class ContactControllerTest {
 
             assertNull(response.getErrors());
             assertEquals(10, response.getData().size());
-            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(10, response.getPaging().getSize());
         });
 
@@ -374,8 +373,8 @@ class ContactControllerTest {
 
             assertNull(response.getErrors());
             assertEquals(10, response.getData().size());
-            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(10, response.getPaging().getSize());
         });
 
@@ -393,8 +392,8 @@ class ContactControllerTest {
 
             assertNull(response.getErrors());
             assertEquals(10, response.getData().size());
-            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(0, response.getPaging().getCurrentPage());
+            assertEquals(10, response.getPaging().getTotalPage());
             assertEquals(10, response.getPaging().getSize());
         });
     }
