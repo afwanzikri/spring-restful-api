@@ -21,6 +21,7 @@ public class AddressService {
 
     @Autowired
     private ContactRepository contactRepository;
+
     @Autowired
     private AddressRepository addressRepository;
 
