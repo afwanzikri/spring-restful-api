@@ -45,7 +45,7 @@ public class ContactController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<ContactResponse> create(User user,
+    public WebResponse<ContactResponse> update(User user,
                                                @RequestBody UpdateContactRequest request,
                                                @PathVariable("contactId") String contactId){
 
