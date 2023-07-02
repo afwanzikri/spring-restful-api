@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -113,5 +115,20 @@ public class AddressService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address Not Found"));
 
         addressRepository.delete(address);
+    }
+
+    @Transactional
+    public List<AddressResponse> list(User user, String contactId){
+        Contact contact = contactRepository.findFirstByUserAndId(user, contactId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact Not Found"));
+
+        List<Address> addressList = addressRepository.findAllByContact(contact);
+
+        if (addressList.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address Not Found");
+        }
+
+//        return addressList.stream().map(address -> toAddressResponse(address)).toList();
+        return addressList.stream().map(this::toAddressResponse).toList();
     }
 }

@@ -44,3 +44,10 @@ desc contacts;
 select * from addresses;
 desc addresses;
 
+
+DELETE FROM addresses ;
+DELETE FROM contacts ;
+DELETE FROM users ;
+
+
+

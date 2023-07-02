@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -398,6 +399,118 @@ class AddressControllerTest {
             assertNull(response.getErrors());
             assertEquals("OK", response.getData());
             assertFalse(addressRepository.existsById(address.getId()));
+        });
+    }
+
+    /*
+     * -- Unit test GET LIST Address API --
+     */
+    @Test
+    void getListAddressContactNotFound() throws Exception {
+        mockMvc.perform(
+                get("/api/contacts/99999/addresses")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void getNoListAddressContactFound() throws Exception {
+        mockMvc.perform(
+                get("/api/contacts/12425345/addresses")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void getListAddressSuccess() throws Exception {
+        Contact contact = contactRepository.findById("12425345").orElseThrow();
+
+        Address address = new Address();
+        address.setId("987654");
+        address.setStreet("Jl. H. Rean, Namara Residence");
+        address.setCity("Tangerang Selatan");
+        address.setProvince("Banten");
+        address.setCountry("Indonesia");
+        address.setPostalCode("15415");
+        address.setContact(contact);
+        addressRepository.save(address);
+
+        Address address1 = new Address();
+        address1.setId("999999");
+        address1.setStreet("Jl. Rajawali Selatan 2 No. 1B");
+        address1.setCity("Jakarta Pusat");
+        address1.setProvince("DKI Jakarta");
+        address1.setCountry("Indonesia");
+        address1.setPostalCode("10720");
+        address1.setContact(contact);
+        addressRepository.save(address1);
+
+        mockMvc.perform(
+                get("/api/contacts/12425345/addresses")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<AddressResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+            assertTrue(addressRepository.existsById(address.getId()));
+            assertTrue(addressRepository.existsById(address1.getId()));
+            assertEquals(address.getId(), response.getData().get(0).getId());
+            assertEquals(address1.getId(), response.getData().get(1).getId());
+        });
+    }
+
+    @Test
+    void getListAddressSuccess2() throws Exception {
+        Contact contact = contactRepository.findById("12425345").orElseThrow();
+
+        for (int i = 0; i < 5; i++) {
+            Address address = new Address();
+            address.setId("id-" +i);
+            address.setStreet("Jl. H. Rean, Namara Residence-" +i);
+            address.setCity("Tangerang Selatan-" +i);
+            address.setProvince("Banten" +i);
+            address.setCountry("Indonesia" +i);
+            address.setPostalCode("15415" +i);
+            address.setContact(contact);
+            addressRepository.save(address);
+        }
+
+        mockMvc.perform(
+                get("/api/contacts/12425345/addresses")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<AddressResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+            assertEquals(5, response.getData().size());
         });
     }
 }
