@@ -332,4 +332,72 @@ class AddressControllerTest {
             assertTrue(addressRepository.existsById(response.getData().getId()));
         });
     }
+
+    /*
+     * -- Unit test DELETE Address API --
+     */
+    @Test
+    void deleteAddressButContactNotFound() throws Exception {
+        mockMvc.perform(
+                delete("/api/contacts/99999/addresses/987654")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void deleteAddressNotFound() throws Exception {
+        mockMvc.perform(
+                delete("/api/contacts/12425345/addresses/987654")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isNotFound()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void deleteAddressSuccess() throws Exception {
+        Contact contact = contactRepository.findById("12425345").orElseThrow();
+
+        Address address = new Address();
+        address.setId("987654");
+        address.setStreet("Jl. H. Rean, Namara Residence");
+        address.setCity("Tangerang Selatan");
+        address.setProvince("Banten");
+        address.setCountry("Indonesia");
+        address.setPostalCode("15415");
+        address.setContact(contact);
+        addressRepository.save(address);
+
+        mockMvc.perform(
+                delete("/api/contacts/12425345/addresses/987654")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+            assertEquals("OK", response.getData());
+            assertFalse(addressRepository.existsById(address.getId()));
+        });
+    }
 }

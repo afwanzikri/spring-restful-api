@@ -60,7 +60,8 @@ public class ContactController {
             path = "/api/contacts/{contactId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<String> delete(User user, @PathVariable("contactId") String contactId){
+    public WebResponse<String> delete(User user,
+                                      @PathVariable("contactId") String contactId){
         log.info("DELETE-contactId --> {}", contactId);
 
         contactService.delete(user, contactId);

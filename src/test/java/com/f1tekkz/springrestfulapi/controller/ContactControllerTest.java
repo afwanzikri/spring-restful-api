@@ -279,6 +279,7 @@ class ContactControllerTest {
 
             assertNull(response.getErrors());
             assertEquals("OK", response.getData());
+            assertFalse(contactRepository.existsById(contact.getId()));
         });
     }
 

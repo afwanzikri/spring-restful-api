@@ -1,7 +1,7 @@
 # Address API Specs
 
 ## Create Address
-Endpoint : POST /api/contacts/{idContacts}/addresses
+Endpoint : POST /api/contacts/{contactId}/addresses
 
 Request Header :
 - X-API-TOKEN : TOKEN (Mandatory)
@@ -39,7 +39,7 @@ Response Body (Failed) :
 ```
 
 ## Get Address
-Endpoint : GET /api/contacts/{idContact}/addresses/{idAddress}
+Endpoint : GET /api/contacts/{contactId}/addresses/{addressId}
 
 Request Header :
 - X-API-TOKEN : TOKEN (Mandatory)
@@ -66,7 +66,7 @@ Response Body (Failed) :
 ```
 
 ## Update Address
-Endpoint : PUT /api/contacts/{idContacts}/addresses/{idAddress}
+Endpoint : PUT /api/contacts/{contactId}/addresses/{addressId}
 
 Request Header :
 - X-API-TOKEN : TOKEN (Mandatory)
@@ -104,7 +104,7 @@ Response Body (Failed) :
 ```
 
 ## Remove Address
-Endpoint : DELETE /api/contacts/{idContact}/addresses/{idAddress}
+Endpoint : DELETE /api/contacts/{contactId}/addresses/{addressId}
 
 Request Header :
 - X-API-TOKEN : TOKEN (Mandatory)
