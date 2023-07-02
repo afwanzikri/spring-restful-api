@@ -8,6 +8,7 @@ import com.f1tekkz.springrestfulapi.model.CreateAddressRequest;
 import com.f1tekkz.springrestfulapi.model.WebResponse;
 import com.f1tekkz.springrestfulapi.repository.AddressRepository;
 import com.f1tekkz.springrestfulapi.repository.ContactRepository;
+import com.f1tekkz.springrestfulapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class AddressService {
         address.setCountry(request.getCountry());
         address.setPostalCode(request.getPostalCode());
 
-//        addressRepository.save(address);
+        addressRepository.save(address);
 
         return toAddressResponse(address);
     }

@@ -2,6 +2,7 @@ package com.f1tekkz.springrestfulapi.controller;
 
 import com.f1tekkz.springrestfulapi.entity.Contact;
 import com.f1tekkz.springrestfulapi.entity.User;
+import com.f1tekkz.springrestfulapi.model.AddressResponse;
 import com.f1tekkz.springrestfulapi.model.CreateAddressRequest;
 import com.f1tekkz.springrestfulapi.model.WebResponse;
 import com.f1tekkz.springrestfulapi.repository.AddressRepository;
@@ -58,7 +59,7 @@ class AddressControllerTest {
         user.setName("AfwanZ");
         user.setToken("kkshdf9ysuierbwejhrbdaiu9823");
         user.setTokenExpiredAt(System.currentTimeMillis() + 100000000000L);
-        userRepository.save(user);
+        userRepository.save(user); // karena method utk UnitTest dan tidak menggunakan annotation @Transactional, maka dibutuhkan contactRepository.save(contact)
 
         Contact contact = new Contact();
         contact.setUser(user);
@@ -71,6 +72,9 @@ class AddressControllerTest {
         contactRepository.save(contact); // karena method utk UnitTest dan tidak menggunakan annotation @Transactional, maka dibutuhkan contactRepository.save(contact)
     }
 
+    /*
+     * -- Unit test Create-Address API --
+     */
     @Test
     void createAddressBadRequest() throws Exception {
         CreateAddressRequest request = new CreateAddressRequest();
@@ -78,7 +82,7 @@ class AddressControllerTest {
         request.setCity("Tangerang Selatan");
         request.setProvince("Banten");
         request.setCountry("");
-        request.setPostalCode("123456");
+        request.setPostalCode("15415");
 
         mockMvc.perform(
                 post("/api/contacts/12425345/addresses")
@@ -93,6 +97,39 @@ class AddressControllerTest {
             });
 
             assertNotNull(response.getErrors());
+        });
+    }
+
+    @Test
+    void createAddressSuccess() throws Exception {
+        CreateAddressRequest request = new CreateAddressRequest();
+        request.setStreet("Jl. H. Rean");
+        request.setCity("Tangerang Selatan");
+        request.setProvince("Banten");
+        request.setCountry("Indonesia");
+        request.setPostalCode("15415");
+
+        mockMvc.perform(
+                post("/api/contacts/12425345/addresses")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-API-TOKEN", "kkshdf9ysuierbwejhrbdaiu9823")
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<AddressResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+
+            assertNull(response.getErrors());
+
+            assertEquals(request.getStreet(), response.getData().getStreet());
+            assertEquals(request.getCity(), response.getData().getCity());
+            assertEquals(request.getProvince(), response.getData().getProvince());
+            assertEquals(request.getCountry(), response.getData().getCountry());
+            assertEquals(request.getPostalCode(), response.getData().getPostalCode());
+
+            assertTrue(addressRepository.existsById(response.getData().getId()));
         });
     }
 }
