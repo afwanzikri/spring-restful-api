@@ -38,22 +38,11 @@ Response Body (Failed) :
 }
 ```
 
-## Update Address
-Endpoint : PUT /api/contacts/{idContacts}/addresses/{idAddress}
+## Get Address
+Endpoint : GET /api/contacts/{idContact}/addresses/{idAddress}
 
 Request Header :
 - X-API-TOKEN : TOKEN (Mandatory)
-
-Request Body :
-```json
-{
-  "street" : "Jalan ...",
-  "city" : "Kota",
-  "province" : "provinsi",
-  "country" : "Negara",
-  "postalCode" : "17121"
-}
-```
 
 Response Body (Success) :
 ```json
@@ -76,11 +65,22 @@ Response Body (Failed) :
 }
 ```
 
-## Get Addres
-Endpoint : GET /api/contacts/{idContact}/addresses/{idAddress}
+## Update Address
+Endpoint : PUT /api/contacts/{idContacts}/addresses/{idAddress}
 
 Request Header :
 - X-API-TOKEN : TOKEN (Mandatory)
+
+Request Body :
+```json
+{
+  "street" : "Jalan ...",
+  "city" : "Kota",
+  "province" : "provinsi",
+  "country" : "Negara",
+  "postalCode" : "17121"
+}
+```
 
 Response Body (Success) :
 ```json
