@@ -33,7 +33,8 @@ public class ContactController {
             path = "/api/contacts/{contactId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<ContactResponse> get(User user, @PathVariable("contactId") String contactId){
+    public WebResponse<ContactResponse> get(User user,
+                                            @PathVariable("contactId") String contactId){
         log.info("GET-contactId --> {}", contactId);
 
         ContactResponse contactResponse = contactService.get(user, contactId);
