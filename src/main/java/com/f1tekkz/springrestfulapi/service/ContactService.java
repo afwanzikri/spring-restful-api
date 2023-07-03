@@ -7,6 +7,7 @@ import com.f1tekkz.springrestfulapi.model.CreateContactRequest;
 import com.f1tekkz.springrestfulapi.model.SearchContactRequest;
 import com.f1tekkz.springrestfulapi.model.UpdateContactRequest;
 import com.f1tekkz.springrestfulapi.repository.ContactRepository;
+import com.f1tekkz.springrestfulapi.resolver.CurrentDateTime;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class ContactService {
 
     @Autowired
     public ValidationService validationService;
+    @Autowired
+    public CurrentDateTime currentDateTime;
 
     @Transactional
     public ContactResponse create(User user, CreateContactRequest request){
@@ -45,6 +48,8 @@ public class ContactService {
         contact.setEmail(request.getEmail());
         contact.setPhone(request.getPhone());
         contact.setUser(user);
+        contact.setCreatedBy(user.getUsername());
+        contact.setCreatedDate(currentDateTime.getDateTime());
         contactRepository.save(contact);
 
         return toContactResponse(contact);
@@ -79,6 +84,8 @@ public class ContactService {
         contact.setLastName(request.getLastName());
         contact.setEmail(request.getEmail());
         contact.setPhone(request.getPhone());
+        contact.setModifiedBy(user.getUsername());
+        contact.setModifiedDate(currentDateTime.getDateTime());
         contactRepository.save(contact);
 
         return toContactResponse(contact);

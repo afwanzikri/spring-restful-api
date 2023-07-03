@@ -3,7 +3,6 @@ package com.f1tekkz.springrestfulapi.controller;
 import com.f1tekkz.springrestfulapi.entity.User;
 import com.f1tekkz.springrestfulapi.model.*;
 import com.f1tekkz.springrestfulapi.service.ContactService;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,8 +34,6 @@ public class ContactController {
     )
     public WebResponse<ContactResponse> get(User user,
                                             @PathVariable("contactId") String contactId){
-        log.info("GET-contactId --> {}", contactId);
-
         ContactResponse contactResponse = contactService.get(user, contactId);
         return WebResponse.<ContactResponse>builder().data(contactResponse).build();
     }
@@ -49,9 +46,7 @@ public class ContactController {
     public WebResponse<ContactResponse> update(User user,
                                                @RequestBody UpdateContactRequest request,
                                                @PathVariable("contactId") String contactId){
-
         request.setId(contactId);
-
         ContactResponse contactResponse = contactService.update(user, request);
         return WebResponse.<ContactResponse>builder().data(contactResponse).build();
     }
@@ -62,8 +57,6 @@ public class ContactController {
     )
     public WebResponse<String> delete(User user,
                                       @PathVariable("contactId") String contactId){
-        log.info("DELETE-contactId --> {}", contactId);
-
         contactService.delete(user, contactId);
         return WebResponse.<String>builder().data("OK").build();
     }

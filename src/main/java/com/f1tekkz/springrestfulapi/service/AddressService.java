@@ -10,6 +10,7 @@ import com.f1tekkz.springrestfulapi.model.WebResponse;
 import com.f1tekkz.springrestfulapi.repository.AddressRepository;
 import com.f1tekkz.springrestfulapi.repository.ContactRepository;
 import com.f1tekkz.springrestfulapi.repository.UserRepository;
+import com.f1tekkz.springrestfulapi.resolver.CurrentDateTime;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class AddressService {
     @Autowired
     private ValidationService validationService;
 
+    @Autowired
+    public CurrentDateTime currentDateTime;
+
     @Transactional
     public AddressResponse create(User user, CreateAddressRequest request){
         validationService.validate(request);
@@ -50,7 +54,8 @@ public class AddressService {
         address.setProvince(request.getProvince());
         address.setCountry(request.getCountry());
         address.setPostalCode(request.getPostalCode());
-
+        address.setCreatedBy(user.getUsername());
+        address.setCreatedDate(currentDateTime.getDateTime());
         addressRepository.save(address);
 
         return toAddressResponse(address);
@@ -101,6 +106,8 @@ public class AddressService {
         address.setProvince(request.getProvince());
         address.setCountry(request.getCountry());
         address.setPostalCode(request.getPostalCode());
+        address.setModifiedBy(user.getUsername());
+        address.setModifiedDate(currentDateTime.getDateTime());
         addressRepository.save(address);
 
         return toAddressResponse(address);

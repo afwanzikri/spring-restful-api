@@ -45,9 +45,41 @@ select * from addresses;
 desc addresses;
 
 
-DELETE FROM addresses ;
-DELETE FROM contacts ;
-DELETE FROM users ;
+-- DELETE FROM addresses ;
+-- DELETE FROM contacts ;
+-- DELETE FROM users ;
 
+SELECT * FROM users u ;
+SELECT * FROM contacts c ;
+SELECT * FROM addresses a ;
 
+-- ALTER table users drop column modified_by;
 
+-- ALTER table users add column created_by varchar(100);
+-- ALTER table users add column created_date DATETIME DEFAULT NULL;
+-- ALTER table users add column created_date varchar(50) default null;
+-- ALTER table users add column modified_by varchar(100);
+-- ALTER table users add column modified_date varchar(100);
+
+-- ALTER table contacts add column created_by varchar(100);
+-- ALTER table contacts add column created_date datetime default null;
+-- ALTER table contacts modify column created_date varchar(50) default null;
+-- ALTER table contacts add column modified_by varchar(100);
+-- ALTER table contacts add column modified_date datetime default null;
+-- ALTER table contacts modify column modified_date varchar(50) default null;
+
+-- ALTER table addresses add column created_by varchar(100);
+-- ALTER table addresses add column created_date datetime default null;
+-- ALTER table addresses modify column created_date varchar(50) default null;
+-- ALTER table addresses add column modified_by varchar(100);
+-- ALTER table addresses add column modified_date datetime default null;
+-- ALTER table addresses modify column modified_date varchar(50) default null;
+
+SELECT u.username , u.token ,
+	c.id , c.first_name , c.last_name , c.email , c.phone ,
+	a.id , a.street , a.city , a.province , a.country , a.postal_code 
+from users u 
+join contacts c on c.username = u.username 
+join addresses a on a.contact_id = c.id 
+WHERE c.first_name = "Afwan"
+;

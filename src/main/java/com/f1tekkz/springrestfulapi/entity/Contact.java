@@ -28,6 +28,18 @@ public class Contact {
 
     private String email;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "created_date")
+    private String createdDate;
+
+    @Column(name = "modified_by")
+    private String modifiedBy;
+
+    @Column(name = "modified_date")
+    private String modifiedDate;
+
     @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private User user;

@@ -5,6 +5,7 @@ import com.f1tekkz.springrestfulapi.model.RegisterUserRequest;
 import com.f1tekkz.springrestfulapi.model.UpdateUserRequest;
 import com.f1tekkz.springrestfulapi.model.UserResponse;
 import com.f1tekkz.springrestfulapi.repository.UserRepository;
+import com.f1tekkz.springrestfulapi.resolver.CurrentDateTime;
 import com.f1tekkz.springrestfulapi.security.BCrypt;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Service
@@ -27,6 +30,9 @@ public class UserService {
     @Autowired
     private NativeWebRequest webRequest;
 
+    @Autowired
+    private CurrentDateTime currentDateTime;
+
     @Transactional
     public void register(RegisterUserRequest request){
         validationService.validate(request);
@@ -39,7 +45,8 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt())); // hashing password recommended is bcrypt
         user.setName(request.getName());
-
+        user.setCreatedBy(user.getUsername());
+        user.setCreatedDate(currentDateTime.getDateTime());
         userRepository.save(user);
     }
 
@@ -62,6 +69,8 @@ public class UserService {
             user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         }
 
+        user.setModifiedBy(user.getUsername());
+        user.setModifiedDate(currentDateTime.getDateTime());
         userRepository.save(user);
 
         return UserResponse.builder()
