@@ -6,21 +6,17 @@ import com.f1tekkz.springrestfulapi.entity.User;
 import com.f1tekkz.springrestfulapi.model.AddressResponse;
 import com.f1tekkz.springrestfulapi.model.CreateAddressRequest;
 import com.f1tekkz.springrestfulapi.model.UpdateAddressRequest;
-import com.f1tekkz.springrestfulapi.model.WebResponse;
 import com.f1tekkz.springrestfulapi.repository.AddressRepository;
 import com.f1tekkz.springrestfulapi.repository.ContactRepository;
-import com.f1tekkz.springrestfulapi.repository.UserRepository;
 import com.f1tekkz.springrestfulapi.resolver.CurrentDateTime;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
