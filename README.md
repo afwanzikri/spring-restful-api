@@ -32,3 +32,7 @@ i.e. IDE -> Intellij IDEA
 - ```mvn spring-boot:run```
 
 ## From the browser call the endpoint http://localhost:8080
+
+3. > use postman app to test Spring-restful-API
+
+![img.png](src/main/resources/image/img.png)
